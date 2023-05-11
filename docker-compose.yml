@@ -1,0 +1,55 @@
+version: "3.8"
+networks:
+  frontend:
+  database:
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sonam
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - ./src/:/var/www 
+      - ./Dockfiles/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - frontend
+      - database 
+    depends_on: 
+      - mysql
+  nginx:
+    image: nginx:alpine
+    container_name: sonam_nginx
+    volumes:
+    - ./Dockerfiles/nginx/conf.d/:/etc/nginx/conf.d/
+    - ./src:/var/www
+    ports:
+      - 8080:80
+    networks:
+      - frontend
+  mysql:
+    container_name: sonam_mysql
+    image: mysql:8
+    ports:
+      - 3000:3306
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
+    networks:
+      - database
+    volumes:
+      - ./Dockerfiles/sql/data:/var/lib/mysql
+  pma:
+    container_name: sonam_pma
+    image: phpmyadmin:latest
+    ports:
+      - 80:80
+    environment:
+      PMA_HOSTS: mysql
+      PMA_USER: user
+      PMA_PASSWORD: password
+    networks:
+      - database
