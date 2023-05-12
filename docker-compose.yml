@@ -12,9 +12,10 @@ services:
     working_dir: /var/www
     volumes:
       - ./src/:/var/www 
+      - ./Dockerfiles/php/entrypoint.sh:/var/www/entrypoint.sh
     networks:
       - frontend
-      - database 
+      - database
     depends_on: 
       - mysql
   nginx:
