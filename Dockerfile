@@ -16,8 +16,12 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Installing composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer update
-ENTRYPOINT [ "./entrypoint.sh" ]
+COPY ./Dockerfiles/php/entrypoint.sh ./src/www/entrypoint.sh
 
+# RUN composer install
+# RUN php artisan key:generate
+ENTRYPOINT ["./entrypoint.sh"]
+
+CMD ["php-fpm", "-F"]
 EXPOSE 9000
 
